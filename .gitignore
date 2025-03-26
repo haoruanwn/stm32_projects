@@ -1,3 +1,4 @@
 # 忽略所有的 build 文件夹
 */build
 */*/build
+*/*/.cache
