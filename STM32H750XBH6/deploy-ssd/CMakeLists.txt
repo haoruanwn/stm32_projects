@@ -49,6 +49,12 @@ add_executable(${CMAKE_PROJECT_NAME})
 # Add STM32CubeMX generated sources
 add_subdirectory(cmake/stm32cubemx)
 
+# 从./Drivers/user/Src遍历的添加源文件，添加到USER_SOURCES变量中
+file(GLOB USER_SOURCES ./Drivers/User/Src/*.c)
+
+# 添加X-CUBE-AI文件夹下的源文件
+file(GLOB AI_SOURCES ./X-CUBE-AI/*.c)
+
 # Link directories setup
 target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined library search paths
@@ -57,11 +63,18 @@ target_link_directories(${CMAKE_PROJECT_NAME} PRIVATE
 # Add sources to executable
 target_sources(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user sources here
+    ${USER_SOURCES}
+    ${AI_SOURCES}
 )
 
 # Add include paths
 target_include_directories(${CMAKE_PROJECT_NAME} PRIVATE
     # Add user defined include paths
+    ./Drivers/User/Inc
+    ./X-CUBE-AI 
+    ./X-CUBE-AI/App
+    ./Middlewares/ST/AI/Inc
+
 )
 
 # Add project symbols (macros)

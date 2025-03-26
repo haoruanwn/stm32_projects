@@ -31,12 +31,22 @@ extern "C" {
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "led.h"
+#include "usart.h"
+#include "sdram.h" 
+#include "lcd_image.h"
+#include "lcd_spi_200.h"
+#include "dcmi_ov5640.h" 
 /* USER CODE END Includes */
 
 /* Exported types ------------------------------------------------------------*/
 /* USER CODE BEGIN ET */
-
+#define AI_OBJDETECT_SSD_ST_PP_NB_CLASSES         (1)
+#define AI_OBJDETECT_SSD_ST_PP_IOU_THRESHOLD      (0.5)
+#define AI_OBJDETECT_SSD_ST_PP_CONF_THRESHOLD     (0.5)
+#define AI_OBJDETECT_SSD_ST_PP_MAX_BOXES_LIMIT    (5)
+#define AI_OBJDETECT_SSD_ST_PP_MAX_PORCESS_LIMIT  (50)
+#define AI_OBJDETECT_SSD_ST_PP_TOTAL_DETECTIONS   (3830)
 /* USER CODE END ET */
 
 /* Exported constants --------------------------------------------------------*/
@@ -53,6 +63,8 @@ extern "C" {
 void Error_Handler(void);
 
 /* USER CODE BEGIN EFP */
+void Dma2d_Memcpy_PFC(uint32_t *pSrc, uint32_t *pDst, uint16_t x, uint16_t y, uint16_t xsize, uint16_t ysize,
+  uint32_t rowStride, uint32_t input_color_format, uint32_t output_color_format);
 
 /* USER CODE END EFP */
 
