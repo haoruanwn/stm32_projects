@@ -18,11 +18,10 @@
 /* USER CODE END Header */
 /* Includes ------------------------------------------------------------------*/
 #include "main.h"
-#include "app_x-cube-ai.h"
 
 /* Private includes ----------------------------------------------------------*/
 /* USER CODE BEGIN Includes */
-
+#include "app_x-cube-ai.h"
 /* USER CODE END Includes */
 
 /* Private typedef -----------------------------------------------------------*/
@@ -52,6 +51,8 @@ SPI_HandleTypeDef hspi6;
 
 UART_HandleTypeDef huart1;
 
+SDRAM_HandleTypeDef hsdram1;
+
 /* USER CODE BEGIN PV */
 // #define Camera_Buffer SDRAM_BANK_ADDR
 AI_ALIGNED(4)
@@ -70,6 +71,7 @@ static void MX_DMA2D_Init(void);
 static void MX_USART1_UART_Init(void);
 static void MX_CRC_Init(void);
 static void MX_SPI6_Init(void);
+static void MX_FMC_Init(void);
 /* USER CODE BEGIN PFP */
 
 /* USER CODE END PFP */
@@ -124,12 +126,13 @@ int main(void)
     MX_USART1_UART_Init();
     MX_CRC_Init();
     MX_SPI6_Init();
+    MX_FMC_Init();
     /* USER CODE BEGIN 2 */
     USART1_Init();
     LED_Init();
     SPI_LCD_Init();
 
-    DCMI_OV5640_Init();                                                          // DCMI以及OV5640初始化
+    DCMI_OV5640_Init();                                                          // DCMI以及OV5640初始�?
     OV5640_DMA_Transmit_Continuous((uint32_t)Camera_Buffer, Display_BufferSize); // 启动DMA连续传输
 
     MX_CRC_Init();
@@ -147,7 +150,6 @@ int main(void)
     /* USER CODE BEGIN WHILE */
     while (1)
     {
-        /* USER CODE END WHILE */
         if (OV5640_FrameState == 1) // 采集到了一帧图像
         {
             OV5640_DCMI_Suspend();
@@ -167,6 +169,7 @@ int main(void)
 
             OV5640_FrameState = 0; // 清零标志位
         }
+        /* USER CODE END WHILE */
 
         /* USER CODE BEGIN 3 */
     }
@@ -437,6 +440,53 @@ static void MX_USART1_UART_Init(void)
     /* USER CODE END USART1_Init 2 */
 }
 
+/* FMC initialization function */
+static void MX_FMC_Init(void)
+{
+
+    /* USER CODE BEGIN FMC_Init 0 */
+
+    /* USER CODE END FMC_Init 0 */
+
+    FMC_SDRAM_TimingTypeDef SdramTiming = {0};
+
+    /* USER CODE BEGIN FMC_Init 1 */
+
+    /* USER CODE END FMC_Init 1 */
+
+    /** Perform the SDRAM1 memory initialization sequence
+  */
+    hsdram1.Instance = FMC_SDRAM_DEVICE;
+    /* hsdram1.Init */
+    hsdram1.Init.SDBank = FMC_SDRAM_BANK1;
+    hsdram1.Init.ColumnBitsNumber = FMC_SDRAM_COLUMN_BITS_NUM_8;
+    hsdram1.Init.RowBitsNumber = FMC_SDRAM_ROW_BITS_NUM_12;
+    hsdram1.Init.MemoryDataWidth = FMC_SDRAM_MEM_BUS_WIDTH_16;
+    hsdram1.Init.InternalBankNumber = FMC_SDRAM_INTERN_BANKS_NUM_4;
+    hsdram1.Init.CASLatency = FMC_SDRAM_CAS_LATENCY_3;
+    hsdram1.Init.WriteProtection = FMC_SDRAM_WRITE_PROTECTION_DISABLE;
+    hsdram1.Init.SDClockPeriod = FMC_SDRAM_CLOCK_PERIOD_2;
+    hsdram1.Init.ReadBurst = FMC_SDRAM_RBURST_ENABLE;
+    hsdram1.Init.ReadPipeDelay = FMC_SDRAM_RPIPE_DELAY_0;
+    /* SdramTiming */
+    SdramTiming.LoadToActiveDelay = 2;
+    SdramTiming.ExitSelfRefreshDelay = 7;
+    SdramTiming.SelfRefreshTime = 4;
+    SdramTiming.RowCycleDelay = 7;
+    SdramTiming.WriteRecoveryTime = 3;
+    SdramTiming.RPDelay = 2;
+    SdramTiming.RCDDelay = 2;
+
+    if (HAL_SDRAM_Init(&hsdram1, &SdramTiming) != HAL_OK)
+    {
+        Error_Handler();
+    }
+
+    /* USER CODE BEGIN FMC_Init 2 */
+
+    /* USER CODE END FMC_Init 2 */
+}
+
 /**
   * @brief GPIO Initialization Function
   * @param None
@@ -452,12 +502,14 @@ static void MX_GPIO_Init(void)
     __HAL_RCC_GPIOI_CLK_ENABLE();
     __HAL_RCC_GPIOB_CLK_ENABLE();
     __HAL_RCC_GPIOA_CLK_ENABLE();
+    __HAL_RCC_GPIOE_CLK_ENABLE();
     __HAL_RCC_GPIOJ_CLK_ENABLE();
     __HAL_RCC_GPIOH_CLK_ENABLE();
     __HAL_RCC_GPIOC_CLK_ENABLE();
     __HAL_RCC_GPIOG_CLK_ENABLE();
-    __HAL_RCC_GPIOK_CLK_ENABLE();
+    __HAL_RCC_GPIOD_CLK_ENABLE();
     __HAL_RCC_GPIOF_CLK_ENABLE();
+    __HAL_RCC_GPIOK_CLK_ENABLE();
 
     /*Configure GPIO pins : PJ15 PJ14 PJ12 PJ13
                            PJ9 PJ0 PJ8 PJ7
@@ -517,14 +569,6 @@ static void MX_GPIO_Init(void)
     GPIO_InitStruct.Alternate = GPIO_AF10_QUADSPI;
     HAL_GPIO_Init(GPIOF, &GPIO_InitStruct);
 
-    /*Configure GPIO pins : PH2 PH3 */
-    GPIO_InitStruct.Pin = GPIO_PIN_2 | GPIO_PIN_3;
-    GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
-    GPIO_InitStruct.Pull = GPIO_NOPULL;
-    GPIO_InitStruct.Speed = GPIO_SPEED_FREQ_VERY_HIGH;
-    GPIO_InitStruct.Alternate = GPIO_AF12_FMC;
-    HAL_GPIO_Init(GPIOH, &GPIO_InitStruct);
-
     /*Configure GPIO pin : PH4 */
     GPIO_InitStruct.Pin = GPIO_PIN_4;
     GPIO_InitStruct.Mode = GPIO_MODE_AF_PP;
@@ -575,18 +619,18 @@ void Dma2d_Memcpy_PFC(uint32_t *pSrc, uint32_t *pDst, uint16_t x, uint16_t y, ui
     hdma2d.Instance = DMA2D;
 
     hdma2d.Init.Mode = DMA2D_M2M_PFC;                // 存储器到存储器模式，并启用PFC转换
-    hdma2d.Init.ColorMode = output_color_format;     // 输出颜色格式，要和LTDC的设置一致
-    hdma2d.Init.OutputOffset = rowStride - xsize;    // 行偏移
+    hdma2d.Init.ColorMode = output_color_format;     // 输出颜色格式，要和LTDC的设置一�?
+    hdma2d.Init.OutputOffset = rowStride - xsize;    // 行偏�?
     hdma2d.Init.AlphaInverted = DMA2D_REGULAR_ALPHA; // 正常透明通道
-    hdma2d.Init.RedBlueSwap = DMA2D_RB_REGULAR;      // 不交换 R和B 颜色通道
+    hdma2d.Init.RedBlueSwap = DMA2D_RB_REGULAR;      // 不交�? R和B 颜色通道
     hdma2d.XferCpltCallback = NULL;                  // DMA2D回调设置，此处不使用
 
     hdma2d.LayerCfg[1].AlphaMode = DMA2D_REPLACE_ALPHA;     // 正常透明通道
-    hdma2d.LayerCfg[1].InputAlpha = 0xFF;                   // 配置恒定透明度，取值范围0~255，255表示不透明，0表示完全透明
+    hdma2d.LayerCfg[1].InputAlpha = 0xFF;                   // 配置恒定透明度，取�?�范�?0~255�?255表示不�?�明�?0表示完全透明
     hdma2d.LayerCfg[1].InputColorMode = input_color_format; // 输入格式
-    hdma2d.LayerCfg[1].InputOffset = 0;                     // 输入行偏移
+    hdma2d.LayerCfg[1].InputOffset = 0;                     // 输入行偏�?
     hdma2d.LayerCfg[1].AlphaInverted = DMA2D_REGULAR_ALPHA; // 正常透明通道
-    hdma2d.LayerCfg[1].RedBlueSwap = DMA2D_RB_REGULAR;      // 不交换 R和B 颜色通道
+    hdma2d.LayerCfg[1].RedBlueSwap = DMA2D_RB_REGULAR;      // 不交�? R和B 颜色通道
 
     /* DMA2D Initialization */
     if (HAL_DMA2D_Init(&hdma2d) == HAL_OK)

@@ -22,7 +22,7 @@
 #include "stm32h7xx_hal.h"
 
 
-UART_HandleTypeDef huart1;  // UART_HandleTypeDef 结构体变量
+extern UART_HandleTypeDef huart1;  // UART_HandleTypeDef 结构体变量
 
 
 /*************************************************************************************************

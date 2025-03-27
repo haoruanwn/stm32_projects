@@ -3,6 +3,7 @@
 
 #include "stm32h7xx_hal.h"
 #include "usart.h"
+#include "main.h"
 
 
 #define SDRAM_Size 16*1024*1024  //16M×Ö½Ú

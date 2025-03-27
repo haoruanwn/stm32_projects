@@ -23,7 +23,7 @@
 #include "dcmi_ov5640.h"  
 #include "dcmi_ov5640_cfg.h"  
 
-DCMI_HandleTypeDef   hdcmi;            // DCMI句柄
+extern DCMI_HandleTypeDef   hdcmi;            // DCMI句柄
 DMA_HandleTypeDef    DMA_Handle_dcmi;  // DMA句柄
 
 volatile uint8_t OV5640_FrameState = 0;  // DCMI状态标志，当数据帧传输完成时，会被 HAL_DCMI_FrameEventCallback() 中断回调函数置 1     
