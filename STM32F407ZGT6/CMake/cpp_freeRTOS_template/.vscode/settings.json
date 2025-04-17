@@ -1,0 +1,31 @@
+{
+    "clangd.arguments": [
+        "--compile-commands-dir=${workspaceFolder}/build"
+    ],
+
+
+    "VsCodeTaskButtons.showCounter": true,
+    "VsCodeTaskButtons.tasks": [
+        {
+            "label": "$(wrench) Configure",
+            "task": "CMake configure",
+            "tooltip": "Configure the project with CMake"
+        },
+        {
+            "label": "$(tools) Build",
+            "task": "Build",
+            "tooltip": "Build the project"
+        },
+        {
+            "label": "$(trash) Clean",
+            "task": "Clean",
+            "tooltip": "Build the project"
+        },
+        {
+            "label": "$(zap) Flash",
+            "task": "Flash",
+            "tooltip": "Flash firmware to STM32 via ST-Link",
+            "color": "statusBarItem.errorBackground"  // 可选：红色强调操作
+        }
+    ]
+}

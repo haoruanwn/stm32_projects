@@ -1,0 +1,32 @@
+CompileFlags:
+  Add:
+    # 目标架构配置
+    - "--target=arm-none-eabi"
+    - "-mcpu=cortex-m4"
+    - "-mthumb"
+    - "-mfpu=fpv4-sp-d16"
+    - "-mfloat-abi=hard"
+
+    # 标准库路径（根据你的g++ -v输出）
+    - "-isystem=/usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/include/c++/10.3.1"
+    - "-isystem=/usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/include/c++/10.3.1/arm-none-eabi"
+    - "-isystem=/usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/include/c++/10.3.1/backward"
+    - "-isystem=/usr/lib/gcc/arm-none-eabi/10.3.1/include"
+    - "-isystem=/usr/lib/gcc/arm-none-eabi/10.3.1/include-fixed"
+    - "-isystem=/usr/lib/gcc/arm-none-eabi/10.3.1/../../../arm-none-eabi/include"
+
+    # STM32必备宏定义
+    - "-DUSE_HAL_DRIVER"
+    - "-DSTM32F407xx"
+    - "-DUSE_FULL_LL_DRIVER"
+
+    # 项目特定路径（根据实际项目调整）
+    - "-I./Drivers/STM32F4xx_HAL_Driver/Inc"
+    - "-I./Core/Inc"
+    - "-I./Drivers/CMSIS/Device/ST/STM32F4xx/Include"
+    - "-I./Drivers/CMSIS/Include"
+
+    # C++标准设置
+    - "-std=c++17"
+    - "-fno-exceptions"
+    - "-fno-rtti"
