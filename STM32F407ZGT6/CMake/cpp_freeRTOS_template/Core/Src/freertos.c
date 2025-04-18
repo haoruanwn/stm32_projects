@@ -121,6 +121,7 @@ void StartDefaultTask(void *argument)
   for(;;)
   {
     Led_toggle(led);
+    printf("LED toggled\n");
     vTaskDelay(1000 / portTICK_PERIOD_MS);
   }
   /* USER CODE END StartDefaultTask */

@@ -37,6 +37,10 @@ set(CMAKE_PROJECT_NAME demo)
 # Include toolchain file
 include("cmake/gcc-arm-none-eabi.cmake")
 
+# 添加到工具链包含之后（确保覆盖可能存在的默认值）
+set(CMAKE_SYSROOT "/opt/gcc-arm-none-eabi-10.3-2021.10/arm-none-eabi")
+set(CMAKE_FIND_ROOT_PATH_MODE_INCLUDE ONLY)  # 仅在sysroot中搜索头文件[4,6](@ref)
+
 # Enable compile command to ease indexing with e.g. clangd
 set(CMAKE_EXPORT_COMPILE_COMMANDS TRUE)
 
